@@ -3,6 +3,7 @@ import express, {Router} from "express";
 // Controllers
 import UserController from "../Controllers/UserController";
 
+// Init router
 const router: Router = express.Router();
 
 // User
