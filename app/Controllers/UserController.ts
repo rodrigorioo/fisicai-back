@@ -26,4 +26,27 @@ export default {
             });
         });
     },
+
+    /**
+     *
+     * @param req
+     * @param res
+     */
+    forgotPassword (req: Request, res: Response) {
+
+        // Get data from request
+        const email: string =  req.body.email || req.query.email;
+
+        // Init service
+        const userService = new UserService();
+
+        // Login
+        userService.forgotPassword(email).then( (dataForgot) => {
+            res.status(200).send(dataForgot);
+        }).catch( (err) => {
+            res.status(err.code).send({
+                message: err.message,
+            });
+        });
+    },
 }
