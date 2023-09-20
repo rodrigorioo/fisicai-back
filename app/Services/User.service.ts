@@ -1,6 +1,8 @@
 import {UserModel} from "../Models/User.model";
 import {NotFoundException} from "../Exceptions/Models/NotFoundException";
-import {ForgotPassword} from "../Models/ForgotPassword";
+import {ForgotPassword, ForgotPasswordInterface} from "../Models/ForgotPassword";
+import formData from 'form-data';
+import Mailgun from 'mailgun.js';
 
 const bcrypt = require('bcryptjs');
 const md5 = require('md5');
@@ -71,7 +73,7 @@ export class UserService {
                 // Check if not exist a previous code
                 ForgotPassword.findBy('email', email).then( (forgotPassword) => {
 
-                    // TODO: Send email with code for reset password
+                    this.sendForgotPasswordCode(email, (forgotPassword as ForgotPasswordInterface).code);
 
                     // Send response
                     return resolve({
@@ -86,14 +88,17 @@ export class UserService {
                         ForgotPassword.create({
                             email,
                             code: md5(email),
-                        }).then( (forgotPassword) => {
+                        }).then( (createResponse) => {
 
-                            // TODO: Send email with code for reset password
+                            ForgotPassword.findBy('id', createResponse.insertId).then( (forgotPassword) => {
+                                this.sendForgotPasswordCode(email, (forgotPassword as ForgotPasswordInterface).code);
 
-                            // Send response
-                            return resolve({
-                                message: 'El link para resetear la contraseña fue enviado a tu email',
+                                // Send response
+                                return resolve({
+                                    message: 'El link para resetear la contraseña fue enviado a tu email',
+                                });
                             });
+
 
                         }).catch( (err) => {
 
@@ -128,5 +133,30 @@ export class UserService {
             });
 
         });
+    }
+
+    sendForgotPasswordCode(email: string, code: string) {
+
+        return new Promise( (resolve, reject) => {
+
+            // Create client
+            const mailgun = new Mailgun(formData);
+            const mg = mailgun.client({
+                username: 'api',
+                key: process.env.MAILGUN_API_KEY || '',
+            });
+
+            // Send email
+            mg.messages.create(process.env.MAILGUN_DOMAIN || '', {
+                from: `${process.env.MAILGUN_FROM_NAME} <${process.env.MAILGUN_FROM_EMAIL}>`,
+                to: [email],
+                subject: "Resetear contraseña",
+                html: `<p>A continuación, utilice el siguiente link para resetear su contraseña: <a href="${process.env.FRONTEND_URL}/forgot-password/${code}">Resetear contraseña</a></p>`
+            })
+                .then(msg => resolve(msg))
+                .catch(err => reject(err));
+        });
+
+
     }
 }
