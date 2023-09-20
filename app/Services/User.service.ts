@@ -135,6 +135,11 @@ export class UserService {
         });
     }
 
+    /**
+     *
+     * @param email
+     * @param code
+     */
     sendForgotPasswordCode(email: string, code: string) {
 
         return new Promise( (resolve, reject) => {
@@ -158,5 +163,104 @@ export class UserService {
         });
 
 
+    }
+
+    /**
+     *
+     * @param code
+     */
+    checkForgotPasswordCode(code: string) {
+        return new Promise( (resolve, reject) => {
+
+            // Get code
+            ForgotPassword.findBy('code', code).then( (forgotPassword) => {
+
+                return resolve({
+                    message: 'Código válido',
+                });
+
+            }).catch( (e) => {
+
+                // Si el código no existe
+                if(e instanceof NotFoundException) {
+                    return reject({
+                        code: 404,
+                        message: 'Código inválido',
+                    });
+                } else {
+                    return reject({
+                        code: e.getCode(),
+                        message: 'Error al consultar el código',
+                    });
+                }
+            });
+
+        });
+    }
+
+    changePasswordForgotten(code: string, password: string) {
+        return new Promise( (resolve, reject) => {
+
+            // Get code
+            ForgotPassword.findBy('code', code).then( (forgotPassword) => {
+
+                // Update user
+                UserModel.update({
+                    email: (forgotPassword as ForgotPasswordInterface).email
+                }, {
+                    password: bcrypt.hashSync(password, 8),
+                }).then( (resUpdateUser) => {
+
+                    // Delete code
+                    ForgotPassword.delete({
+                        code: code,
+                    }).then( (resDeleteForgotPassword) => {
+
+                        return resolve({
+                            message: 'Contraseña cambiada con éxito',
+                        });
+
+                    }).catch( (e) => {
+                        return reject({
+                            code: e.getCode(),
+                            message: 'Error al eliminar el código',
+                        });
+                    });
+
+                }).catch( (e) => {
+
+                    // Si el usuario no existe
+                    if(e instanceof NotFoundException) {
+
+                        return reject({
+                            code: 404,
+                            message: 'Usuario no existe',
+                        });
+
+                    } else {
+                        return reject({
+                            code: e.getCode(),
+                            message: 'Error al actualizar el usuario',
+                        });
+                    }
+                });
+
+            }).catch( (e) => {
+
+                // Si el código no existe
+                if(e instanceof NotFoundException) {
+                    return reject({
+                        code: 404,
+                        message: 'Código inválido',
+                    });
+                } else {
+                    return reject({
+                        code: e.getCode(),
+                        message: 'Error al consultar el código',
+                    });
+                }
+            });
+
+        });
     }
 }

@@ -81,4 +81,117 @@ export class Model {
             });
         });
     }
+
+    /**
+     *
+     * @param findColumns
+     * @param updateColumns
+     */
+    static update(findColumns: object, updateColumns: object) {
+
+        return new Promise( (success, failure) => {
+
+            // Get columns names and values
+            const columnUpdateNames = Object.keys(updateColumns);
+            const columnUpdateValues = Object.values(updateColumns);
+            const columnFindNames = Object.keys(findColumns);
+            const columnFindValues = Object.values(findColumns);
+
+            // Build update values string
+            let updateValues: string = "";
+            columnUpdateValues.forEach( (value, index) => {
+
+                // Add space
+                if(updateValues !== "") {
+                    updateValues += ", ";
+                }
+
+                // Add column name
+                updateValues += `${columnUpdateNames[index]} = `;
+
+                // Add column value
+                if(typeof value === "string") {
+                    updateValues += `'${value}'`;
+                } else {
+                    updateValues += `${value}`;
+                }
+            });
+
+            // Build find values string
+            let findValues: string = "";
+            columnFindValues.forEach( (value, index) => {
+
+                // Add space
+                if(findValues !== "") {
+                    findValues += " AND ";
+                }
+
+                // Add column name
+                findValues += `${columnFindNames[index]} = `;
+
+                // Add column value
+                if(typeof value === "string") {
+                    findValues += `'${value}'`;
+                } else {
+                    findValues += `${value}`;
+                }
+            });
+
+            const query = `UPDATE ${this.table} SET ${updateValues} WHERE ${findValues}`;
+
+            this.db.query(query, (err, res) => {
+
+                if (err) {
+                    return failure(new ModelException(err.message));
+                }
+
+                success(res);
+            });
+        });
+    }
+
+    /**
+     *
+     * @param whereColumns
+     */
+    static delete(whereColumns: object) {
+
+        return new Promise( (success, failure) => {
+
+            // Get columns names and values
+            const columnWhereNames = Object.keys(whereColumns);
+            const columnWhereValues = Object.values(whereColumns);
+
+            // Build where values string
+            let whereValues: string = "";
+            columnWhereValues.forEach( (value, index) => {
+
+                // Add space
+                if(whereValues !== "") {
+                    whereValues += " AND ";
+                }
+
+                // Add column name
+                whereValues += `${columnWhereNames[index]} = `;
+
+                // Add column value
+                if(typeof value === "string") {
+                    whereValues += `'${value}'`;
+                } else {
+                    whereValues += `${value}`;
+                }
+            });
+
+            const query = `DELETE FROM ${this.table} WHERE ${whereValues}`;
+
+            this.db.query(query, (err, res) => {
+
+                if (err) {
+                    return failure(new ModelException(err.message));
+                }
+
+                success(res);
+            });
+        });
+    }
 }
