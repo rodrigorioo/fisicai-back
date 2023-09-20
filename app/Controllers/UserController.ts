@@ -50,6 +50,24 @@ export default {
         });
     },
 
+    checkForgotPasswordCode (req: Request, res: Response) {
+
+        // Get data from request
+        const code: string =  req.body.code || req.query.code;
+
+        // Init service
+        const userService = new UserService();
+
+        // Login
+        userService.checkForgotPasswordCode(code).then( (dataCheckCode) => {
+            res.status(200).send(dataCheckCode);
+        }).catch( (err) => {
+            res.status(err.code).send({
+                message: err.message,
+            });
+        });
+    },
+
     changePasswordForgotten (req: Request, res: Response) {
 
         // Get data from request
