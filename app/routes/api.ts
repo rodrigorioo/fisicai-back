@@ -9,5 +9,6 @@ const router: Router = express.Router();
 // User
 router.post('/register', UserController.register);
 router.post('/forgot-password', UserController.forgotPassword);
+router.post('/change-password-forgotten', UserController.changePasswordForgotten);
 
 export default router;

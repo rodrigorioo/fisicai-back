@@ -49,4 +49,23 @@ export default {
             });
         });
     },
+
+    changePasswordForgotten (req: Request, res: Response) {
+
+        // Get data from request
+        const code: string =  req.body.code || req.query.code;
+        const password: string =  req.body.password || req.query.password;
+
+        // Init service
+        const userService = new UserService();
+
+        // Login
+        userService.changePasswordForgotten(code, password).then( (dataChangePassword) => {
+            res.status(200).send(dataChangePassword);
+        }).catch( (err) => {
+            res.status(err.code).send({
+                message: err.message,
+            });
+        });
+    },
 }
