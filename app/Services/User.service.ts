@@ -1,13 +1,68 @@
-import {UserModel} from "../Models/User.model";
+import {UserInterface, UserModel} from "../Models/User.model";
 import {NotFoundException} from "../Exceptions/Models/NotFoundException";
 import {ForgotPassword, ForgotPasswordInterface} from "../Models/ForgotPassword";
 import formData from 'form-data';
 import Mailgun from 'mailgun.js';
+import {authConfig} from "../config/auth.config";
 
 const bcrypt = require('bcryptjs');
 const md5 = require('md5');
+const jwt = require('jsonwebtoken');
 
 export class UserService {
+
+    /**
+     *
+     * @param email
+     * @param password
+     */
+    login (email: string, password: string) {
+
+        return new Promise( (resolve, reject) => {
+
+            // Get user
+            UserModel.findBy('email', email).then( (user ) => {
+
+                // If the user was founded, verify password
+                const passwordIsValid = bcrypt.compareSync(
+                    password,
+                    (user as UserInterface).password
+                );
+
+                if (!passwordIsValid) {
+                    return reject({
+                        code: 401,
+                        message: "Invalid Password!",
+                    });
+                }
+
+                // Create access token
+                const token = jwt.sign(
+                    {
+                        id: (user as UserInterface).id
+                    },
+                    authConfig.secret,
+                    {
+                        algorithm: 'HS256',
+                        allowInsecureKeySizes: true,
+                        expiresIn: 2628003, // 1 month
+                    });
+
+                return resolve({
+                    id: (user as UserInterface).id,
+                    email: (user as UserInterface).email,
+                    accessToken: token,
+                });
+
+            }).catch( (err) => {
+                return reject({
+                    code: err.getCode(),
+                    message: err.message,
+                });
+            });
+
+        });
+    }
 
     /**
      *
