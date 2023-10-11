@@ -32,7 +32,7 @@ export class UserService {
                 if (!passwordIsValid) {
                     return reject({
                         code: 401,
-                        message: "Invalid Password!",
+                        message: "Contraseña inválida",
                     });
                 }
 
@@ -253,6 +253,11 @@ export class UserService {
         });
     }
 
+    /**
+     *
+     * @param code
+     * @param password
+     */
     changePasswordForgotten(code: string, password: string) {
         return new Promise( (resolve, reject) => {
 
@@ -316,6 +321,27 @@ export class UserService {
                 }
             });
 
+        });
+    }
+
+    checkAuth (userId: number) {
+
+        return new Promise( (resolve, reject) => {
+            // Get user
+            UserModel.findById(userId).then( (user) => {
+
+                resolve({
+                    email: (user as UserInterface).email,
+                });
+
+            }).catch( (err) => {
+
+                reject({
+                    code: err.getCode(),
+                    message: err.message
+                });
+
+            });
         });
     }
 }

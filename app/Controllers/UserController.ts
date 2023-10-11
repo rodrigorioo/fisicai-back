@@ -74,6 +74,11 @@ export default {
         });
     },
 
+    /**
+     *
+     * @param req
+     * @param res
+     */
     checkForgotPasswordCode (req: Request, res: Response) {
 
         // Get data from request
@@ -92,6 +97,11 @@ export default {
         });
     },
 
+    /**
+     *
+     * @param req
+     * @param res
+     */
     changePasswordForgotten (req: Request, res: Response) {
 
         // Get data from request
@@ -110,4 +120,24 @@ export default {
             });
         });
     },
+
+    /**
+     *
+     * @param req
+     * @param res
+     */
+    checkAuth (req: Request, res: Response) {
+
+        // Init service
+        const userService = new UserService();
+
+        // Check auth
+        userService.checkAuth(req.userId).then( (dataLogin) => {
+            res.json(dataLogin);
+        }).catch( (err) => {
+            res.status(err.code).send({
+                message: err.message,
+            });
+        });
+    }
 }

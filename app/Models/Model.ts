@@ -11,6 +11,30 @@ export class Model {
     constructor() {}
 
     /**
+     * Find row by id field
+     * @param id
+     */
+    static findById (id: number) {
+
+        return new Promise<object>( (success, failure) => {
+            const query = `SELECT * FROM ${this.table} WHERE id = ${id}`;
+
+            this.db.query(query, (err, res) => {
+
+                if (err) {
+                    return failure(new ModelException(err.message));
+                }
+
+                if (res.length) {
+                    return success(res[0]);
+                }
+
+                failure(new NotFoundException());
+            });
+        });
+    }
+
+    /**
      * Field row by column name and value
      * @param column
      * @param value
