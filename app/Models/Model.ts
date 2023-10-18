@@ -67,6 +67,75 @@ export class Model {
     }
 
     /**
+     * Find rows by columns names and values
+     * @param columns
+     * @param orderBy
+     */
+    static get (columns: object, orderBy: object|null = null) {
+
+        return new Promise<object>( (success, failure) => {
+
+            // Get columns names and values
+            const columnNames = Object.keys(columns);
+            const columnValues = Object.values(columns);
+
+            // Build where's string
+            let wheres: string = "";
+            columnNames.forEach( (column, iColumn) => {
+
+                const value = columnValues[iColumn];
+
+                if(wheres !== "") {
+                    wheres += " AND ";
+                }
+
+                wheres += `${column} = `;
+
+                // Insert value of column
+                if(typeof value === "string") {
+                    wheres += `'${value}'`;
+                } else {
+                    wheres += `${value}`;
+                }
+            });
+
+            // Order by
+            let orders = "";
+            if(orderBy) {
+
+                // Get columns and directions
+                const orderByColumns = Object.keys(orderBy);
+                const orderByDirections = Object.values(orderBy);
+
+                orderByColumns.forEach( (column, iColumn) => {
+
+                    const direction = orderByDirections[iColumn];
+
+                    if(orders !== "") {
+                        orders += ", ";
+                    }
+
+                    orders += `${column} ${direction}`;
+                });
+
+                // Add ORDER BY
+                orders = ` ORDER BY ${orders}`;
+            }
+
+            const query = `SELECT * FROM ${this.table} WHERE ${wheres} ${orders}`;
+
+            this.db.query(query, (err, res) => {
+
+                if (err) {
+                    return failure(new ModelException(err.message));
+                }
+
+                return success(res);
+            });
+        });
+    }
+
+    /**
      * Create new row sending columns object with column names and values
      * @param columns
      */

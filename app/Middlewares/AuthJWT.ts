@@ -15,7 +15,7 @@ const verifyToken = (req: Request, res: Response, next: NextFunction) => {
 
     if (!token) {
         return res.status(403).send({
-            message: "No token provided!"
+            message: "El token no ha sido enviado"
         });
     }
 
@@ -26,7 +26,7 @@ const verifyToken = (req: Request, res: Response, next: NextFunction) => {
 
             if(jwt) {
                 return res.status(401).send({
-                    message: "Unauthorized!",
+                    message: "No está autorizado",
                 });
             }
 

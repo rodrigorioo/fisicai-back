@@ -1,6 +1,6 @@
 import {UserInterface, UserModel} from "../Models/User.model";
 import {NotFoundException} from "../Exceptions/Models/NotFoundException";
-import {ForgotPassword, ForgotPasswordInterface} from "../Models/ForgotPassword";
+import {ForgotPasswordModel, ForgotPasswordInterface} from "../Models/ForgotPassword.model";
 import formData from 'form-data';
 import Mailgun from 'mailgun.js';
 import {authConfig} from "../config/auth.config";
@@ -126,7 +126,7 @@ export class UserService {
             UserModel.findBy('email', email).then( (user) => {
 
                 // Check if not exist a previous code
-                ForgotPassword.findBy('email', email).then( (forgotPassword) => {
+                ForgotPasswordModel.findBy('email', email).then( (forgotPassword) => {
 
                     this.sendForgotPasswordCode(email, (forgotPassword as ForgotPasswordInterface).code);
 
@@ -140,12 +140,12 @@ export class UserService {
                     // Si no existe un código generado
                     if(e instanceof NotFoundException) {
 
-                        ForgotPassword.create({
+                        ForgotPasswordModel.create({
                             email,
                             code: md5(email),
                         }).then( (createResponse) => {
 
-                            ForgotPassword.findBy('id', createResponse.insertId).then( (forgotPassword) => {
+                            ForgotPasswordModel.findBy('id', createResponse.insertId).then( (forgotPassword) => {
                                 this.sendForgotPasswordCode(email, (forgotPassword as ForgotPasswordInterface).code);
 
                                 // Send response
@@ -228,7 +228,7 @@ export class UserService {
         return new Promise( (resolve, reject) => {
 
             // Get code
-            ForgotPassword.findBy('code', code).then( (forgotPassword) => {
+            ForgotPasswordModel.findBy('code', code).then( (forgotPassword) => {
 
                 return resolve({
                     message: 'Código válido',
@@ -262,7 +262,7 @@ export class UserService {
         return new Promise( (resolve, reject) => {
 
             // Get code
-            ForgotPassword.findBy('code', code).then( (forgotPassword) => {
+            ForgotPasswordModel.findBy('code', code).then( (forgotPassword) => {
 
                 // Update user
                 UserModel.update({
@@ -272,7 +272,7 @@ export class UserService {
                 }).then( (resUpdateUser) => {
 
                     // Delete code
-                    ForgotPassword.delete({
+                    ForgotPasswordModel.delete({
                         code: code,
                     }).then( (resDeleteForgotPassword) => {
 

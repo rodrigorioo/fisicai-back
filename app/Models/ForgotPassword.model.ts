@@ -8,7 +8,7 @@ export interface ForgotPasswordInterface {
     updated_at: string,
 }
 
-export class ForgotPassword extends Model {
+export class ForgotPasswordModel extends Model {
 
     protected static table = "forgot_passwords";
 

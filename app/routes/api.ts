@@ -2,10 +2,23 @@ import express, {Router} from "express";
 import {AuthJWT} from "../Middlewares/AuthJWT";
 
 // Controllers
+import ProblemController from "../Controllers/ProblemController";
 import UserController from "../Controllers/UserController";
 
 // Init router
 const router: Router = express.Router();
+
+// Problems
+router.post(
+    '/solve-problem',
+    [AuthJWT.verifyToken],
+    ProblemController.solve
+);
+router.get(
+    '/problems',
+    [AuthJWT.verifyToken],
+    ProblemController.get
+);
 
 // User
 router.post('/login', UserController.login);
