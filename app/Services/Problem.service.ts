@@ -1,6 +1,7 @@
 import {ProblemModel} from "../Models/Problem.model";
 import {IResolution} from "../Controllers/ProblemController";
 import {ProblemSolver} from "../Models/ProblemSolver";
+import {OkPacket} from "mysql";
 
 export class ProblemService {
 
