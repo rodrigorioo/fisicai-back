@@ -1,5 +1,6 @@
 import {ProblemModel} from "../Models/Problem.model";
 import {IResolution} from "../Controllers/ProblemController";
+import {ProblemSolver} from "../Models/ProblemSolver";
 
 export class ProblemService {
 
@@ -13,9 +14,55 @@ export class ProblemService {
 
         return new Promise( (resolve, reject) => {
 
-            // TODO: Solve problem
+            // Process the data sended by user
+            if (resolution) {
 
-            resolve("");
+                // Init class
+                const problemSolver = new ProblemSolver(problem, resolution.requested);
+                problemSolver.addData(resolution.data);
+
+                // Solve the problem
+                let problemSolved;
+
+                try {
+                    problemSolved = problemSolver.resolveProblem();
+                } catch (errResolveProblem: unknown) {
+
+                    const message: string = (errResolveProblem instanceof Error) ? errResolveProblem.message : "Error in solve problem";
+
+                    return reject(message);
+                }
+
+                return resolve(problemSolved);
+
+            }
+
+            // Process the problem
+            if (problem) {
+
+                // Init class
+                const problemSolver = new ProblemSolver(problem);
+
+                // Solve the problem
+                problemSolver.processProblem().then((problemSolved) => {
+
+                    // Load problem to database
+                    ProblemModel.create({
+                        user_id: userId,
+                        problem,
+                        processed_data: JSON.stringify(problemSolved),
+                    }).then( (problemModel: OkPacket) => {
+
+                        // const problemId = problemModel.insertId;
+
+                        return resolve(problemSolved);
+
+                    });
+
+                }).catch((err) => {
+                    return reject(`Solve problem error: ${err.message}`)
+                });
+            }
         });
     }
 
