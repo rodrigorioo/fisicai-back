@@ -25,7 +25,7 @@ export default {
             // Valid if keys exists in object
             if (!("requested" in resolution) || !("data" in resolution)) {
                 res.status(500).send({
-                    message: "Parameter resolution is not completed",
+                    message: "El parámetro de resolución no está completo",
                 });
                 return;
             }
@@ -33,7 +33,7 @@ export default {
             // Valid if are array
             if (!Array.isArray(resolution.requested) || !Array.isArray(resolution.data)) {
                 res.status(500).send({
-                    message: "Some of the keys of resolution are not array",
+                    message: "Algunas de las keys de la resolución no están presentes",
                 });
                 return;
             }
@@ -70,7 +70,7 @@ export default {
         }
 
         res.status(422).send({
-            message: 'Problem or resolution parameter needed',
+            message: 'Se necesita el problema o los parámetros a resolver',
         });
     },
 
