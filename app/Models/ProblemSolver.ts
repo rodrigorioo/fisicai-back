@@ -1,5 +1,6 @@
 import {Datum} from "./Datum";
 import {Operations} from "./Topics/Topic";
+import {Wit, Entity} from "./Wit";
 
 interface ReturnResolution {
     data: Array<Datum>,
