@@ -38,40 +38,28 @@ export default {
                 return;
             }
 
-            // Init service
-            const problemService = new ProblemService();
-
-            // Solve problem
-            problemService.solve(problem, resolution, req.userId).then( (problemSolved) => {
-
-                res.json(problemSolved);
-
-            }).catch( (errMessage: string) => {
-                res.status(500).send({
-                    message: errMessage,
-                });
-            });
-
-        } else if (problem) {
-
-            // Init service
-            const problemService = new ProblemService();
-
-            // Solve problem
-            problemService.solve(problem, resolution, req.userId).then( (problemSolved) => {
-
-                res.json(problemSolved);
-
-            }).catch( (errMessage: string) => {
-                res.status(500).send({
-                    message: errMessage,
-                });
-            });
         }
 
-        res.status(422).send({
-            message: 'Se necesita el problema o los parámetros a resolver',
-        });
+        if(problem || resolution) {
+
+            // Init service
+            const problemService = new ProblemService();
+
+            // Solve problem
+            problemService.solve(problem, resolution, req.userId).then( (problemSolved) => {
+
+                res.json(problemSolved);
+
+            }).catch( (errMessage: string) => {
+                res.status(500).send({
+                    message: errMessage,
+                });
+            });
+        } else {
+            res.status(422).send({
+                message: 'Se necesita el problema o los parámetros a resolver',
+            });
+        }
     },
 
     /**
