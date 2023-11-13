@@ -3,12 +3,12 @@ import {Datum} from "../Datum";
 import {DateTime} from "luxon";
 
 interface MRUOperationsMethods {
-    distancia : (equation : string) => Datum,
-    velocidad : (equation : string) => Datum,
-    tiempo : (equation : string) => Datum,
-    posicion_inicial : (equation : string) => Datum,
-    hora : (equation : string) => Datum,
-    rapidez : (equation : string) => Datum,
+    distancia: (equation: string) => Datum,
+    velocidad: (equation: string) => Datum,
+    tiempo: (equation: string) => Datum,
+    posicion_inicial: (equation : string) => Datum,
+    hora: (equation: string) => Datum,
+    rapidez: (equation: string) => Datum,
 }
 
 class MRU extends Topic {
@@ -28,59 +28,58 @@ class MRU extends Topic {
         }
     }
 
-    processEquation(nameOfEquation : keyof MRUOperationsMethods) : Datum {
+    processEquation(nameOfEquation: keyof MRUOperationsMethods): Datum {
         return this[nameOfEquation]() as Datum;
     }
 
     // Equations
+    distancia (): Datum {
 
-    distancia () {
-
-        let equation : string = this.equations["distancia"] as string;
+        let equation: string = this.equations["distancia"] as string;
 
         this.data.forEach( (datum : Datum) => {
             equation = equation.replace(datum.name, datum.value);
         });
 
         // Get value match string
-        let valueMathString : string = this.getValueMatchString(equation);
+        let valueMathString: string = this.getValueMatchString(equation);
 
         return new Datum("distancia", valueMathString, "m");
     }
 
-    velocidad () {
+    velocidad (): Datum {
 
-        let equation : string = this.equations["velocidad"] as string;
+        let equation: string = this.equations["velocidad"] as string;
 
         this.data.forEach( (datum : Datum) => {
             equation = equation.replace(datum.name, datum.value);
         });
 
         // Get value match string
-        let valueMathString : string = this.getValueMatchString(equation);
+        let valueMathString: string = this.getValueMatchString(equation);
 
         return new Datum("velocidad", valueMathString, "m/s");
     }
 
-    tiempo () {
+    tiempo (): Datum {
 
-        let equation : string = this.equations["tiempo"] as string;
+        let equation: string = this.equations["tiempo"] as string;
 
         this.data.forEach( (datum : Datum) => {
             equation = equation.replace(datum.name, datum.value);
         });
 
         // Get value match string
-        let valueMathString : string = this.getValueMatchString(equation);
+        let valueMathString: string = this.getValueMatchString(equation);
 
         return new Datum("tiempo", valueMathString, "s");
     }
 
-    posicion_inicial () {
+    posicion_inicial (): Datum {
         return new Datum("posicion_inicial", "0", "m");
     }
 
-    hora () {
+    hora (): Datum {
 
         let date: DateTime = DateTime.now();
         let time: number = 0;
@@ -105,7 +104,7 @@ class MRU extends Topic {
         return new Datum("hora", `Dias: ${difference.days} - Hora: ${difference.hours}:${difference.minutes}:${difference.seconds}`, "");
     }
 
-    rapidez () {
+    rapidez (): Datum {
 
         let equation : string = this.equations["rapidez"] as string;
 
@@ -114,7 +113,7 @@ class MRU extends Topic {
         });
 
         // Get value match string
-        let valueMathString : string = this.getValueMatchString(equation);
+        let valueMathString: string = this.getValueMatchString(equation);
 
         // Add velocidad
         this.data.push(new Datum("velocidad", valueMathString, "m/s"));

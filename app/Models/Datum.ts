@@ -172,6 +172,10 @@ class Datum {
                     this.value = (parseFloat(this.value) * 1000).toString();
                 }
 
+                if(this.unit == 'cm') {
+                    this.value = (parseFloat(this.value) * 0.01).toString();
+                }
+
                 this.unit = 'm';
                 break;
 
@@ -189,6 +193,10 @@ class Datum {
             case 'tiempo':
                 if(this.unit == 'min') {
                     this.value = (parseFloat(this.value) * 60).toString();
+                }
+
+                if(this.unit == 'h') {
+                    this.value = (parseFloat(this.value) * 3600).toString();
                 }
 
                 this.unit = 's';

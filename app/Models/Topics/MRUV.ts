@@ -38,17 +38,16 @@ class MRUV extends Topic {
         }
     }
 
-    processEquation(nameOfEquation : keyof MRUVOperationsMethods) : Datum {
+    processEquation(nameOfEquation: keyof MRUVOperationsMethods): Datum {
         return this[nameOfEquation]() as Datum;
     }
 
     // Equations
-
-    velocidad_inicial () : Datum {
+    velocidad_inicial (): Datum {
         return new Datum("velocidad_inicial", "0", "m/s");
     }
 
-    velocidad_final () : Datum {
+    velocidad_final (): Datum {
 
         let equation : string = this.equations["velocidad_final"] as string;
 
@@ -62,7 +61,7 @@ class MRUV extends Topic {
         return new Datum("velocidad_final", valueMathString, "m/s");
     }
 
-    velocidad () : Datum {
+    velocidad (): Datum {
 
         let equation : string = this.equations["velocidad"] as string;
 
@@ -79,7 +78,7 @@ class MRUV extends Topic {
         return new Datum("velocidad", valueMathString, "m/s");
     }
 
-    rapidez () : Datum {
+    rapidez (): Datum {
 
         let equation : string = this.equations["rapidez"] as string;
 
@@ -99,15 +98,15 @@ class MRUV extends Topic {
         return new Datum("rapidez", valueMathString, "m/s");
     }
 
-    tiempo_inicial () : Datum {
+    tiempo_inicial (): Datum {
         return new Datum("tiempo_inicial", "0", "s");
     }
 
-    tiempo_final () : Datum {
+    tiempo_final (): Datum {
         return new Datum("tiempo_final", "0", "s");
     }
 
-    tiempo () : Datum {
+    tiempo (): Datum {
 
         let equation : string = this.equations["tiempo"] as string;
 
@@ -121,7 +120,7 @@ class MRUV extends Topic {
         return new Datum("tiempo", valueMathString, "s");
     }
 
-    aceleracion () : Datum {
+    aceleracion (): Datum {
 
         let equation : string = this.equations["aceleracion"] as string;
 
@@ -135,15 +134,15 @@ class MRUV extends Topic {
         return new Datum("aceleracion", valueMathString, "m/s2");
     }
 
-    posicion_inicial () : Datum {
+    posicion_inicial (): Datum {
         return new Datum("posicion_inicial", "0", "m");
     }
 
-    posicion_final () : Datum {
+    posicion_final (): Datum {
         return new Datum("posicion_final", "0", "m");
     }
 
-    posicion () : Datum {
+    posicion (): Datum {
         return new Datum("posicion", "0", "m");
     }
 

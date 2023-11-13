@@ -91,7 +91,7 @@ class ProblemSolver {
             if(errorCheck instanceof TopicNotFound)
                 throw errorCheck;
 
-            throw new Error("Error when check the problem");
+            throw new Error("No se pudo procesar su problema, asegúrese de escribirlo correctamente aclarando los datos solicitados y los datos proporcionados.");
         }
 
         // Return the response
