@@ -111,7 +111,13 @@ class ProblemSolver {
         entities.forEach( (entity : Entity, iEntity : number) => {
 
             if(entity.name === "se_solicita") {
-                this.requested.push(this.parseAndNormalizeDataName(entities[iEntity + 1].value));
+
+                const entityRequested = entities[iEntity + 1];
+
+                // Check existence of entity requested
+                if(entityRequested) {
+                    this.requested.push(this.parseAndNormalizeDataName(entities[iEntity + 1].value));
+                }
             }
         });
     }

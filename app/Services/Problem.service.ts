@@ -61,7 +61,7 @@ export class ProblemService {
                     });
 
                 }).catch((err) => {
-                    return reject(`Solve problem error: ${err.message}`)
+                    return reject(`${err.message}`)
                 });
             }
         });
